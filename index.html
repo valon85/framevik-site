@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Framevik Studio — A professional video editor, created from a single sentence</title>
+<meta name="description" content="Framevik Studio is a professional desktop video editor for Mac & Windows, designed and built with CODREN and Meta AI during the Meta Global AI Developer Hackathon.">
+<link rel="icon" type="image/webp" href="assets/logo.webp">
+<style>
+  :root{
+    --bg:#0a0a0f;
+    --bg2:#101017;
+    --panel:#13131c;
+    --panel2:#171724;
+    --line:#262636;
+    --ink:#eceaf4;
+    --muted:#a2a0b4;
+    --faint:#6d6b82;
+    --violet:#7c5cff;
+    --violet-soft:rgba(124,92,255,.14);
+    --cyan:#59c2ff;
+    --radius:14px;
+    --maxw:1120px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--violet);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+
+  /* ---- timeline ruler motif ---- */
+  .ruler{
+    height:26px;
+    background:
+      repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 64px),
+      repeating-linear-gradient(90deg, #1b1b28 0 1px, transparent 1px 8px);
+    background-size:100% 60%,100% 35%;
+    background-repeat:repeat-x;
+    background-position:bottom left;
+    border-bottom:1px solid var(--line);
+    position:relative;
+  }
+  .ruler::after{
+    content:"";position:absolute;top:0;bottom:0;left:38%;
+    width:2px;background:var(--violet);opacity:.85;
+  }
+
+  /* ---- header ---- */
+  header{
+    position:sticky;top:0;z-index:20;
+    background:rgba(10,10,15,.88);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;gap:12px;padding:12px 0}
+  .nav img{width:34px;height:34px;border-radius:9px;display:block}
+  .nav .brand{font-weight:700;font-size:1.05rem;letter-spacing:.2px;color:var(--ink)}
+  .nav .brand span{color:var(--violet)}
+  .nav nav{margin-left:auto;display:flex;gap:22px;font-size:.92rem}
+  .nav nav a{color:var(--muted)}
+  .nav nav a:hover{color:var(--ink);text-decoration:none}
+  @media (max-width:560px){ .nav nav{gap:14px;font-size:.85rem} }
+
+  /* ---- hero ---- */
+  .hero{padding:72px 0 30px;text-align:center}
+  .hero .logo{
+    width:118px;height:118px;border-radius:26px;
+    box-shadow:0 18px 50px rgba(124,92,255,.28), 0 0 0 1px var(--line);
+  }
+  .hero h1{font-size:2.9rem;line-height:1.12;font-weight:800;letter-spacing:-.5px;margin-top:26px}
+  .hero h1 .thin{display:block;font-size:1.55rem;font-weight:600;color:var(--ink);letter-spacing:0;margin-top:10px}
+  .hero .sub{max-width:640px;margin:18px auto 0;color:var(--muted);font-size:1.06rem}
+  .ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+  .btn{
+    display:inline-block;padding:13px 26px;border-radius:11px;font-weight:650;font-size:.98rem;
+    border:1px solid var(--line);color:var(--ink);background:var(--panel);
+  }
+  .btn:hover{text-decoration:none;border-color:var(--violet)}
+  .btn.primary{background:var(--violet);border-color:var(--violet);color:#fff}
+  .btn.primary:hover{background:#8f73ff}
+  .factline{margin-top:26px;color:var(--faint);font-size:.9rem}
+  .factline b{color:var(--muted);font-weight:600}
+  @media (max-width:560px){ .hero{padding-top:52px} .hero h1{font-size:2.1rem} .hero h1 .thin{font-size:1.15rem} }
+
+  /* ---- screenshot ---- */
+  .shot{margin:42px auto 0;max-width:980px}
+  .shot figure{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:10px;box-shadow:0 30px 80px rgba(0,0,0,.55);
+  }
+  .shot img{width:100%;display:block;border-radius:9px}
+  .shot figcaption{color:var(--faint);font-size:.86rem;text-align:center;padding:10px 6px 2px}
+
+  /* ---- sections ---- */
+  section{padding:74px 0 8px}
+  .kicker{
+    text-transform:uppercase;letter-spacing:.16em;font-size:.74rem;font-weight:700;color:var(--violet);
+  }
+  h2{font-size:1.9rem;font-weight:750;letter-spacing:-.3px;margin:10px 0 12px}
+  .lead{color:var(--muted);max-width:720px;font-size:1.02rem}
+
+  /* ---- demo ---- */
+  .videoframe{
+    margin-top:26px;background:var(--panel);border:1px solid var(--line);
+    border-radius:var(--radius);padding:10px;box-shadow:0 30px 80px rgba(0,0,0,.5);
+  }
+  .videoframe .ratio{position:relative;padding-top:56.25%;border-radius:9px;overflow:hidden;background:#000}
+  .videoframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+  /* ---- feature grid ---- */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+  @media (max-width:900px){ .grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:580px){ .grid{grid-template-columns:1fr} }
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 20px 16px;
+  }
+  .card:hover{border-color:#383850;background:var(--panel2)}
+  .card h3{font-size:1rem;font-weight:700;margin-bottom:7px}
+  .card h3::before{
+    content:"";display:block;width:22px;height:3px;border-radius:2px;
+    background:var(--violet);margin-bottom:12px;
+  }
+  .card p{color:var(--muted);font-size:.93rem}
+
+  /* ---- AI editor ---- */
+  .split{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:30px}
+  @media (max-width:820px){ .split{grid-template-columns:1fr} }
+  .panelbox{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+  .panelbox h3{font-size:1.08rem;margin-bottom:10px}
+  .panelbox p,.panelbox li{color:var(--muted);font-size:.96rem}
+  .panelbox ul{list-style:none;margin-top:8px}
+  .panelbox li{padding:7px 0 7px 22px;position:relative;border-bottom:1px dashed #20202f}
+  .panelbox li:last-child{border-bottom:0}
+  .panelbox li::before{content:"▸";position:absolute;left:2px;color:var(--violet)}
+  .chatmock{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.85rem}
+  .chatmock .msg{border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin-bottom:10px;background:var(--bg2);color:var(--muted)}
+  .chatmock .msg b{color:var(--ink);font-weight:600}
+  .chatmock .msg.ai{border-color:rgba(124,92,255,.45);background:var(--violet-soft);color:#cfc8ee}
+  .chatmock .tag{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+
+  /* ---- verified ---- */
+  .badge7{
+    display:inline-flex;align-items:baseline;gap:10px;background:var(--violet-soft);
+    border:1px solid rgba(124,92,255,.5);border-radius:12px;padding:12px 18px;margin-top:24px;
+  }
+  .badge7 .n{font-size:1.7rem;font-weight:800;color:var(--violet);line-height:1}
+  .badge7 .t{font-size:.92rem;color:var(--ink)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+  @media (max-width:820px){ .cols{grid-template-columns:1fr} }
+  .authorship{
+    margin-top:18px;border-left:3px solid var(--violet);background:var(--panel);
+    border-radius:0 var(--radius) var(--radius) 0;padding:18px 22px;color:var(--muted);font-size:.96rem;
+  }
+  .authorship b{color:var(--ink)}
+
+  /* ---- next ---- */
+  .nextbox{
+    margin-top:8px;text-align:center;background:var(--panel);border:1px solid var(--line);
+    border-radius:var(--radius);padding:44px 30px;
+  }
+  .nextbox p{font-size:1.28rem;font-weight:600;line-height:1.55;max-width:700px;margin:0 auto}
+  .nextbox p span{color:var(--violet)}
+
+  /* ---- footer ---- */
+  footer{margin-top:84px;border-top:1px solid var(--line);background:var(--bg2)}
+  footer .wrap{padding-top:30px;padding-bottom:38px}
+  .foot{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:center;color:var(--faint);font-size:.9rem}
+  .foot .brandline{color:var(--muted);font-weight:600}
+  .foot .spacer{flex:1}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <img src="assets/logo.webp" alt="Framevik Studio logo">
+    <a class="brand" href="#top" style="color:var(--ink)">Framevik <span>Studio</span></a>
+    <nav>
+      <a href="#demo">Demo</a>
+      <a href="#features">Features</a>
+      <a href="#ai-editor">AI Editor</a>
+      <a href="#verified">Verified</a>
+    </nav>
+  </div>
+  <div class="ruler" aria-hidden="true"></div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <div class="wrap hero">
+    <img class="logo" src="assets/logo.webp" alt="Framevik Studio — premium film-reel logo">
+    <h1>Framevik Studio
+      <span class="thin">A professional video editor, created from a single sentence.</span>
+    </h1>
+    <p class="sub">Designed and built with <b style="color:var(--ink)">CODREN</b> (codren.ai) and <b style="color:var(--ink)">Meta&nbsp;AI</b> during the Meta Global AI Developer Hackathon, October&nbsp;26 – November&nbsp;4, 2026.</p>
+    <div class="ctas">
+      <a class="btn primary" href="https://youtu.be/V-F-R3J2LcE" target="_blank" rel="noopener">▶ Watch the demo</a>
+      <a class="btn" href="https://github.com/valon85/codren-one-sentence-app" target="_blank" rel="noopener">View the project on GitHub</a>
+    </div>
+    <p class="factline"><b>Desktop app for Mac &amp; Windows</b> — Framevik Studio (Electron)</p>
+
+    <div class="shot">
+      <figure>
+        <img src="assets/editor.jpg" alt="Framevik Studio editor: media bin, Source and Program monitors, and a multi-track timeline with real clips">
+        <figcaption>The real Framevik Studio editor — media bin, dual monitors, and timeline, editing real footage.</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <!-- DEMO -->
+  <section id="demo">
+    <div class="wrap">
+      <p class="kicker">Demo</p>
+      <h2>Three minutes, four products, one engine</h2>
+      <p class="lead">The official hackathon demo: CODREN receives a single sentence and starts building; Framevik Studio edits real footage; and the Meta AI experiences inside Briovix and Spicey close the story.</p>
+      <div class="videoframe">
+        <div class="ratio">
+          <iframe src="https://www.youtube.com/embed/V-F-R3J2LcE" title="CODREN — One-Sentence App, Live — Meta Global AI Developer Hackathon Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="wrap">
+      <p class="kicker">The editor</p>
+      <h2>Built for editors</h2>
+      <p class="lead">A dense, professional non-linear editor that works the way editors work — every function below was verified in the running app or on the exported file itself.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>A cut stays cut</h3>
+          <p>A multi-track timeline where every clip carries its source in-point. Split a clip and the second part plays from the cut point — in playback, in export, and after reopening the project.</p>
+        </div>
+        <div class="card">
+          <h3>Dual monitors, real video</h3>
+          <p>Source and Program monitors play the real video, with sound, synced to the playhead — at each clip's real duration, never a fake one.</p>
+        </div>
+        <div class="card">
+          <h3>Trim, ripple, speed</h3>
+          <p>Precise trimming and ripple edits, per-clip speed from 25% to 400%, and In/Out marking on the ruler so Export renders only the range you chose.</p>
+        </div>
+        <div class="card">
+          <h3>A real color page</h3>
+          <p>12 cinematic looks and Lumetri-style controls, with four scopes — Waveform, RGB Parade, Vectorscope, Histogram — driven by the actual frame.</p>
+        </div>
+        <div class="card">
+          <h3>Effects that render</h3>
+          <p>Chroma Key, Gaussian Blur, Sharpen, Halation and Bass — applied by dragging onto a clip and measured inside the exported file, not just previewed.</p>
+        </div>
+        <div class="card">
+          <h3>Styled titles</h3>
+          <p>Fully styled titles — text, color and position — composed into the export exactly as designed.</p>
+        </div>
+        <div class="card">
+          <h3>True crossfades</h3>
+          <p>Crossfade transitions render in the exported file as a genuine two-picture blend, pixel-measured from full outgoing to full incoming.</p>
+        </div>
+        <div class="card">
+          <h3>Export with audio</h3>
+          <p>Export produces a real file, picture and sound together — verified by measuring the exported file itself, audio track included.</p>
+        </div>
+        <div class="card">
+          <h3>Projects that persist</h3>
+          <p>Close the app and reopen it: the project, clips and cuts are still there. And a new project starts truly empty, under the name you give it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI EDITOR -->
+  <section id="ai-editor">
+    <div class="wrap">
+      <p class="kicker">Inside the app</p>
+      <h2>The AI Editor</h2>
+      <p class="lead">Framevik carries a scoped AI editing assistant that reads the project's current state with every message — and does editing work only.</p>
+      <div class="split">
+        <div class="panelbox">
+          <h3>Two ways to work</h3>
+          <ul>
+            <li><b style="color:var(--ink)">From zero</b> — give it a brief and it builds the edit: imports, cuts, titles, export.</li>
+            <li><b style="color:var(--ink)">Handoff</b> — "I've done it up to here, you continue" — it picks up a human's halfway edit and finishes the job.</li>
+            <li><b style="color:var(--ink)">Scoped, on purpose</b> — it applies steps to the current project and refuses questions that aren't editing jobs.</li>
+            <li><b style="color:var(--ink)">Any language in</b> — briefs are understood in the editor's own words, Albanian included; rendering stays local, reasoning runs through the Meta-powered layer.</li>
+          </ul>
+        </div>
+        <div class="panelbox chatmock">
+          <p class="tag">Reference Match</p>
+          <div class="msg"><b>You:</b> Match the color of this clip to the photo I attached.</div>
+          <div class="msg ai"><b>AI Editor:</b> Reference applied as real, editable color values — exposure, temperature and contrast you can keep adjusting in the color page.</div>
+          <p style="margin-top:6px">Attach a reference photo or video and Framevik matches its color and style as genuine Lumetri values — not a baked-in filter.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERIFIED -->
+  <section id="verified">
+    <div class="wrap">
+      <p class="kicker">How it was accepted</p>
+      <h2>Verified, not promised</h2>
+      <p class="lead">Nothing in Framevik was accepted from a builder's summary. Acceptance meant measurement: in the running app, on its in-app Self-test screen, or on the exported file itself.</p>
+      <div class="badge7"><span class="n">7/7</span><span class="t">measured checks pass on Framevik's in-app Self-test screen — run against the live project store, values printed on screen.</span></div>
+      <div class="cols">
+        <div class="panelbox">
+          <h3>Measured, not asserted</h3>
+          <ul>
+            <li>Split and trim keep exact source points — verified numerically.</li>
+            <li>Effects measured in the exported file: blur, sharpen, halation, bass.</li>
+            <li>Export audio measured against its source, level for level.</li>
+            <li>The export crossfade measured as a true blend, frame weights and all.</li>
+          </ul>
+        </div>
+        <div class="panelbox">
+          <h3>Honest limits, stated</h3>
+          <ul>
+            <li>The Program monitor preview doesn't blend crossfades yet — the export does.</li>
+            <li>Imported media is re-linked, not copied into the app; after a reopen, a clip keeps its place and thumbnail and is re-imported once to play again.</li>
+            <li>No feature is listed here that wasn't measured.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="authorship">
+        <b>Authorship, stated exactly:</b> Framevik was built with CODREN and Meta AI (Muse Spark). The in-app Self-test screen was added by Muse (Meta AI) directly on the final event source after the CODREN builder hit a platform limit — CODREN did not build the Self-test screen, and its results verify the CODREN-built timeline model.
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT'S NEXT -->
+  <section id="next">
+    <div class="wrap">
+      <div class="nextbox">
+        <p class="kicker" style="margin-bottom:14px">What's next</p>
+        <p>"Framevik was created inside this competition — and it does not end with the competition. <span>It continues as a real product, and a real business</span>, built to be used by working editors."</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span class="brandline">Framevik Studio</span>
+    <span>framevik.com</span>
+    <span>Built with CODREN — <a href="https://codren.ai" target="_blank" rel="noopener">codren.ai</a></span>
+    <span><a href="https://github.com/valon85/codren-one-sentence-app" target="_blank" rel="noopener">GitHub project</a></span>
+    <span class="spacer"></span>
+    <span>© 2026 Framevik Studio</span>
+  </div>
+  <div class="ruler" aria-hidden="true" style="border-bottom:0;border-top:1px solid var(--line)"></div>
+</footer>
+
+</body>
+</html>
